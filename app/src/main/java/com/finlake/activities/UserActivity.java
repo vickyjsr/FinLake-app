@@ -39,7 +39,7 @@ public class UserActivity extends AppCompatActivity {
         userViewModel.getAllUsersList().observe(this, listUsers -> {
             Log.d("checkingcalls", "setUpListeners: " + listUsers);
             userAdapter.setItems(listUsers);
-            this.userAdapter.notifyDataSetChanged();
+            userAdapter.notifyDataSetChanged();
         });
     }
 
