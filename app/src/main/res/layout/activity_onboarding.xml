@@ -7,11 +7,11 @@
     tools:context=".activities.OnBoardingActivity">
 
     <ImageView
-        android:id="@+id/tv_heading"
+        android:id="@+id/iv_mascot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/yeti_mascot"
+        android:background="@drawable/yeti_mascot_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,7 +25,7 @@
         android:text="gourav@gmail.com"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_heading" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_mascot" />
 
     <EditText
         android:id="@+id/et_login_password"

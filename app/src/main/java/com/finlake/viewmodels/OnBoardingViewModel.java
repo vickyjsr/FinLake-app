@@ -1,5 +1,7 @@
 package com.finlake.viewmodels;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -15,24 +17,24 @@ public class OnBoardingViewModel extends ViewModel {
     LoginRepository mLoginRepository;
 
     public OnBoardingViewModel() {
-        mLoginResultMutableLiveData.postValue("Not Logged in");
         // set the progress bar
         mLoginRepository = new LoginRepository();
     }
 
     public void login(String email, String password) {
-        mLoginResultMutableLiveData.postValue("checking");
 
         mLoginRepository.loginRemote(new LoginBody(email, password), new LoginResponseInterface() {
             @Override
             public void onResponse(LoginResponse loginResponse) {
 //                set the progress bar
                 mLoginResultMutableLiveData.postValue(loginResponse.getToken());
+                Log.d("checkingcalls", "onResponse: jkhxcvbhncnvb"+loginResponse.getErrorMessage());
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                mLoginResultMutableLiveData.postValue("Login Failure: " + throwable.getLocalizedMessage());
+                Log.d("checkingcalls", "onfailure: jkhxcvbhncnvb"+throwable.getLocalizedMessage());
+                mLoginResultMutableLiveData.postValue(throwable.getLocalizedMessage());
             }
         });
     }

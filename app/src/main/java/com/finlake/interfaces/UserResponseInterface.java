@@ -9,4 +9,6 @@ public interface UserResponseInterface {
     void onResponse(List<UserResponse> userResponse);
 
     void onFailure(Throwable throwable);
+
+    void redirectToLogin();
 }

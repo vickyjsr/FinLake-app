@@ -15,6 +15,8 @@ import java.util.List;
 public class UserViewModel extends ViewModel {
 
     MutableLiveData<List<UserResponse>> listMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<String> mFailureResult = new MutableLiveData<>();
+    MutableLiveData<Boolean> mTokenFailure = new MutableLiveData<>(false);
 
     UserRepository userRepository;
 
@@ -22,8 +24,8 @@ public class UserViewModel extends ViewModel {
         userRepository = new UserRepository();
     }
 
-    public void getAllUsers() {
-        userRepository.getUsers(new UserResponseInterface() {
+    public void getAllUsers(String authToken) {
+        userRepository.getUsers(authToken, new UserResponseInterface() {
             @Override
             public void onResponse(List<UserResponse> userResponse) {
                 listMutableLiveData.postValue(userResponse);
@@ -32,11 +34,23 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onFailure(Throwable throwable) {
 //                error message
+                mFailureResult.setValue(throwable.getLocalizedMessage());
+                Log.d("ljdbsnddjbhasdjns", "onFailure: " + throwable.getLocalizedMessage());
             }
+
+            @Override
+            public void redirectToLogin() {
+                mTokenFailure.postValue(true);
+            }
+
         });
     }
 
     public LiveData<List<UserResponse>> getAllUsersList() {
         return listMutableLiveData;
+    }
+
+    public LiveData<Boolean> getTokenFailure() {
+        return mTokenFailure;
     }
 }

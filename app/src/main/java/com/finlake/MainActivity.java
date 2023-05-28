@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        change this
-        startActivity(new Intent(this, UserActivity.class));
+        startActivity(new Intent(this, OnBoardingActivity.class));
+        finish();
     }
 }
