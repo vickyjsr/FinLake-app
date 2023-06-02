@@ -14,13 +14,14 @@ import android.util.Log;
 import com.finlake.R;
 import com.finlake.SharedPreferenceManager;
 import com.finlake.adapters.UserAdapter;
+import com.finlake.interfaces.OnClickSelectionListener;
 import com.finlake.models.UserResponse;
 import com.finlake.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity implements OnClickSelectionListener {
 
     UserViewModel userViewModel;
     RecyclerView recyclerView;
@@ -62,10 +63,15 @@ public class UserActivity extends AppCompatActivity {
         sharedPreferenceManager.init(this);
         recyclerView = findViewById(R.id.rv_list);
         userList = new ArrayList<>();
-        userAdapter = new UserAdapter(userList);
+        userAdapter = new UserAdapter(userList, this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(userAdapter);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+    }
+
+    @Override
+    public void selectedItem(List<UserResponse> selectedUsers) {
+
     }
 }

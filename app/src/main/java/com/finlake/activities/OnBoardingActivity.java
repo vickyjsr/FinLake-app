@@ -51,19 +51,19 @@ public class OnBoardingActivity extends AppCompatActivity {
     private void listeners() {
         String authToken = sharedPreferenceManager.getAuthToken();
         if (authToken != null && !authToken.isEmpty() && !authToken.startsWith("Failed")) {
-            startActivity(new Intent(this, UserActivity.class));
+            startActivity(new Intent(this, FinanceRoomActivity.class));
             finish();
         }
 
         login.setOnClickListener(view -> mOnBoardingViewModel.login(et_email.getText().toString(), et_password.getText().toString()));
 
         mOnBoardingViewModel.getLoginResult().observe(this, token -> {
-            Log.d("checkingcalls", "onChanged: activity"+token);
+            Log.d("checkingcalls", "onChanged: activity" + token);
             if (!token.isEmpty() && !token.startsWith("Failed")) {
                 sharedPreferenceManager.setAuthToken(token);
                 tv_token.setText(token);
                 makeToast(token);
-                startActivity(new Intent(this, UserActivity.class));
+                startActivity(new Intent(this, FinanceRoomActivity.class));
                 finish();
             }
             makeToast(token);

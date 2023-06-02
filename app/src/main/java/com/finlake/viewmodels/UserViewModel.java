@@ -17,7 +17,6 @@ public class UserViewModel extends ViewModel {
     MutableLiveData<List<UserResponse>> listMutableLiveData = new MutableLiveData<>();
     MutableLiveData<String> mFailureResult = new MutableLiveData<>();
     MutableLiveData<Boolean> mTokenFailure = new MutableLiveData<>(false);
-
     UserRepository userRepository;
 
     public UserViewModel() {
