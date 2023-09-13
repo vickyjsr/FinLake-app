@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,23 +56,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public class UserViewHolder extends RecyclerView.ViewHolder {
 
         TextView email, mobile, name;
+        ImageView cb_item_select;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             email = itemView.findViewById(R.id.tv_email);
             mobile = itemView.findViewById(R.id.tv_mobile);
             name = itemView.findViewById(R.id.tv_name);
+            cb_item_select = itemView.findViewById(R.id.cb_item_select);
 
             itemView.setOnClickListener(view -> {
                 if (selectedUsers.contains(listUsers.get(getAdapterPosition()))) {
-                    itemView.setBackgroundColor(Color.TRANSPARENT);
+                    cb_item_select.setBackgroundResource(R.drawable.checkbox_deselect);
                     selectedUsers.remove(listUsers.get(getAdapterPosition()));
                 } else {
-                    itemView.setBackgroundResource(R.color.purple_200);
+                    cb_item_select.setBackgroundResource(R.drawable.checkbox);
                     selectedUsers.add(listUsers.get(getAdapterPosition()));
                 }
-                if (!selectedUsers.isEmpty())
-                    onClickSelectionListener.selectedItem(selectedUsers);
+                if (!selectedUsers.isEmpty()) onClickSelectionListener.selectedItem(selectedUsers);
             });
 
         }

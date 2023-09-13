@@ -58,8 +58,7 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
         setUpViews(view);
         setUpListeners(view);

@@ -3,7 +3,6 @@ package com.finlake.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 
 import com.finlake.R;
 import com.finlake.SharedPreferenceManager;
+import com.finlake.adapters.FinanceChatHeadAdapter;
 import com.finlake.adapters.FinanceRoomAdapter;
 import com.finlake.fragments.UserFragment;
 import com.finlake.interfaces.OnBackPressFrag;
@@ -35,8 +35,10 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
     SharedPreferenceManager sharedPreferenceManager;
     String authToken;
     List<FinanceRoomResponse> financeRoomList;
-    RecyclerView recyclerView;
+
+    RecyclerView rv_finance_room, rv_finance_chat_head;
     FinanceRoomAdapter financeRoomAdapter;
+    FinanceChatHeadAdapter financeChatHeadAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +52,18 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
         iv_plus = findViewById(R.id.iv_plus);
         sharedPreferenceManager = SharedPreferenceManager.getInstance();
         authToken = sharedPreferenceManager.getAuthToken();
-        recyclerView = findViewById(R.id.rv_finance_room);
+        rv_finance_room = findViewById(R.id.rv_finance_room);
+        rv_finance_chat_head = findViewById(R.id.rv_split_heads);
         financeRoomList = new ArrayList<>();
         financeRoomAdapter = new FinanceRoomAdapter(financeRoomList, this);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(financeRoomAdapter);
+//        todo change this
+        financeChatHeadAdapter = new FinanceChatHeadAdapter();
+        rv_finance_room.setHasFixedSize(true);
+        rv_finance_room.setLayoutManager(new LinearLayoutManager(this));
+        rv_finance_room.setAdapter(financeRoomAdapter);
+        rv_finance_chat_head.setHasFixedSize(true);
+        rv_finance_chat_head.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rv_finance_chat_head.setAdapter(financeChatHeadAdapter);
         roomViewModel = new ViewModelProvider(this).get(RoomViewModel.class);
     }
 
@@ -66,13 +74,13 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
             fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.container, fragment).commit();
         });
-        Toast.makeText(this, "Hi hello!!", Toast.LENGTH_SHORT).show();
 
+//        todo remove hardcoding
         roomViewModel.getAllFinanceRoomByUserId(authToken, "dd78fd8a-8006-4ad5-a82a-3c499c2b08e4");
 
         roomViewModel.getFinanceRoomByUserId().observe(this, financeRoomResponses -> {
-            Toast.makeText(this, "" + financeRoomResponses.size(), Toast.LENGTH_SHORT).show();
             System.out.println("financeRoomResponses " + financeRoomResponses.size());
+            System.out.println("financeRoomResponses " + financeRoomResponses.toString());
             financeRoomAdapter.setItems(financeRoomResponses);
             financeRoomAdapter.notifyDataSetChanged();
         });
@@ -80,7 +88,6 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
         roomViewModel.getErrorMessage().observe(this, s -> {
             Toast.makeText(this, "failed " + s, Toast.LENGTH_SHORT).show();
         });
-
     }
 
     @Override

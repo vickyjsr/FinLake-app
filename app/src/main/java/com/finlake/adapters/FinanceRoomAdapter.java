@@ -1,8 +1,10 @@
 package com.finlake.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,9 +16,9 @@ import com.finlake.interfaces.OnClickFinanceRoomListener;
 import com.finlake.models.FinanceRoomResponse;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FinanceRoomAdapter extends RecyclerView.Adapter<FinanceRoomAdapter.FinanceRoomViewHolder> {
-
     List<FinanceRoomResponse> financeRoomList;
     OnClickFinanceRoomListener onClickFinanceRoomListener;
 
@@ -51,21 +53,27 @@ public class FinanceRoomAdapter extends RecyclerView.Adapter<FinanceRoomAdapter.
 
     public class FinanceRoomViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tv_room_name, tv_room_type;
+        TextView tv_room_name, tv_last_updated_at;
         ConstraintLayout cl;
+        ImageView iv_room_type;
 
         public FinanceRoomViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_room_name = itemView.findViewById(R.id.tv_room_name);
-            tv_room_type = itemView.findViewById(R.id.tv_room_type);
+            tv_last_updated_at = itemView.findViewById(R.id.tv_last_updated_at);
             cl = itemView.findViewById(R.id.cl_layout);
+            iv_room_type = itemView.findViewById(R.id.iv_room_type);
             cl.setOnClickListener(view -> onClickFinanceRoomListener.selectedFinanceRoomItem(financeRoomList.get(getAdapterPosition())));
         }
 
         public void setData(int position) {
             FinanceRoomResponse financeRoomResponse = financeRoomList.get(position);
             tv_room_name.setText(financeRoomResponse.getName());
-            tv_room_type.setText(financeRoomResponse.getRoom_type());
+
+            if (Objects.equals(financeRoomResponse.getRoom_type(), "GROUP")) {
+                iv_room_type.setBackgroundResource(R.drawable.group_room);
+                iv_room_type.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

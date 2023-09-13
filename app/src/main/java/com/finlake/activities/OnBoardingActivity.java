@@ -64,7 +64,6 @@ public class OnBoardingActivity extends AppCompatActivity {
         login = findViewById(R.id.b_login);
         tv_token = findViewById(R.id.tv_token);
 
-        // Create a ValueAnimator for each blink
         ValueAnimator blinkAnimator = createBlinkAnimator();
         blinkAnimator.start();
         mOnBoardingViewModel = new ViewModelProvider(this).get(OnBoardingViewModel.class);
