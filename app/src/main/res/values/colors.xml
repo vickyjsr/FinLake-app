@@ -9,6 +9,7 @@
     <color name="white">#ffffff</color>
     <color name="primary_bg">#E5E5E5</color>
     <color name="background_color">#212e2f</color>
-    <color name="card_color">#e7e6e2</color>
+<!--    <color name="card_color">#e7e6e2</color>-->
+    <color name="card_color">#ffffff</color>
     <color name="text_heading">#000000</color>
 </resources>

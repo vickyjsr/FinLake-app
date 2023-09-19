@@ -1,16 +1,19 @@
 package com.finlake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,6 +32,7 @@ import java.util.List;
 
 public class FinanceRoomActivity extends AppCompatActivity implements OnBackPressFrag, OnClickFinanceRoomListener {
 
+    ConstraintLayout container;
     ImageView iv_plus;
     FragmentTransaction fragmentTransaction;
     Fragment fragment;
@@ -41,6 +45,8 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
     RecyclerView rv_finance_room, rv_finance_chat_head;
     FinanceRoomAdapter financeRoomAdapter;
     FinanceChatHeadAdapter financeChatHeadAdapter;
+    ImageView iv_refresh, iv_logout;
+    ObjectAnimator rotation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,9 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
         if (authToken == null || userId == null) {
             redirectToLoginPage();
         }
+        container = findViewById(R.id.container);
+        iv_logout = findViewById(R.id.iv_logout);
+        iv_refresh = findViewById(R.id.iv_refresh);
         rv_finance_room = findViewById(R.id.rv_finance_room);
         rv_finance_chat_head = findViewById(R.id.rv_split_heads);
         financeRoomList = new ArrayList<>();
@@ -74,10 +83,22 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
     }
 
     private void setUpListeners() {
+        iv_logout.setOnClickListener(view -> {
+            myPreferences.setAuthToken(null);
+            myPreferences.setLoggedInUserId(null);
+            makeToast("Logging out...");
+            redirectToLoginPage();
+        });
+
+        iv_refresh.setOnClickListener(view -> setAllViewModels(true));
+
         iv_plus.setOnClickListener(view -> {
             iv_plus.setVisibility(View.GONE);
+            iv_refresh.setClickable(false);
+            iv_logout.setClickable(false);
             fragment = UserFragment.getInstance(this);
             fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.add(R.id.container, fragment).commit();
         });
 
@@ -88,6 +109,12 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
         roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
 
         roomViewModel.getFinanceRoomByUserId().observe(this, financeRoomResponses -> {
+            new Handler().postDelayed(() -> {
+                if (rotation != null) {
+                    iv_refresh.setBackgroundResource(R.drawable.refresh);
+                    rotation.cancel();
+                }
+            }, 2000);
             financeRoomAdapter.setItems(financeRoomResponses);
             financeRoomAdapter.notifyDataSetChanged();
         });
@@ -113,10 +140,18 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
         if (fragment != null && fragment.isAdded()) {
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
             iv_plus.setVisibility(View.VISIBLE);
+            iv_refresh.setClickable(true);
+            iv_logout.setClickable(true);
             fragment = null;
         } else {
             super.onBackPressed(); // Allow the activity to be closed if no fragment is added
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAllViewModels(true);
     }
 
     @Override
@@ -126,8 +161,28 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
 
     @Override
     public void selectedFinanceRoomItem(FinanceRoomResponse financeRoomResponse) {
-        Intent intent = new Intent(this, TransactionSplit.class);
+        Intent intent = new Intent(this, TransactionChat.class);
         intent.putExtra("finance_room_id", financeRoomResponse.getId());
         startActivity(intent);
+    }
+
+    public void setAllViewModels(boolean animateLoader) {
+        if (animateLoader) {
+            iv_refresh.setBackgroundResource(R.drawable.refresh_animation_state);
+            rotation = ObjectAnimator.ofFloat(iv_refresh, "rotation", 0f, 360f);
+            rotation.setDuration(3000); // 2 seconds for one complete rotation
+            rotation.setRepeatCount(ObjectAnimator.INFINITE);
+            rotation.setInterpolator(new LinearInterpolator());
+            rotation.start();
+        }
+        int page = 0;
+        int pageSize = 10;
+        boolean pagination = true;
+        String status = "active";
+        roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
+    }
+
+    private void makeToast(String token) {
+        Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
     }
 }

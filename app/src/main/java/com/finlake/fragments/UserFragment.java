@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.finlake.R;
@@ -42,8 +44,10 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
     UserAdapter userAdapter;
     List<UserResponse> userList, selectedUsers;
     MyPreferences myPreferences;
-    ImageView iv_done;
+    ImageView iv_done, iv_edit;
     OnBackPressFrag onBackPressFrag;
+    EditText et_group_name;
+    TextView tv_header;
 
     public UserFragment(OnBackPressFrag onBackPressFrag) {
         this.onBackPressFrag = onBackPressFrag;
@@ -70,6 +74,17 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
         if (authToken == null || userId == null) {
             redirectToLoginPage(view);
         }
+
+        iv_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tv_header.setVisibility(View.INVISIBLE);
+                tv_header.setClickable(false);
+                tv_header.setFocusable(false);
+                et_group_name.setVisibility(View.VISIBLE);
+            }
+        });
+
         userViewModel.getAllUsers(authToken, userId);
 
         userViewModel.getAllUsersList().observe(getViewLifecycleOwner(), listUsers -> {
@@ -92,7 +107,10 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
             if (selectedUsers.size() >= 2) {
                 room_type = GlobalEnum.GROUP.getValue();
             }
-            FinanceRoomBody financeRoomBody = new FinanceRoomBody("xbhjbasyz", userId, room_type);
+            if (et_group_name.getText() == null) {
+                makeToast(view, "Group Name is empty");
+            }
+            FinanceRoomBody financeRoomBody = new FinanceRoomBody(et_group_name.getText().toString(), userId, room_type);
             if (!selectedUsers.isEmpty()) {
                 FinanceRoomRequestData financeRoomRequestData = new FinanceRoomRequestData(financeRoomBody, selectedUsers, userId);
                 roomViewModel.createFinanceRoom(authToken, financeRoomRequestData);
@@ -118,6 +136,9 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
         if (view.getContext() != null) {
             myPreferences = MyPreferences.getInstance(view.getContext());
             iv_done = view.findViewById(R.id.iv_done);
+            iv_edit = view.findViewById(R.id.iv_edit);
+            tv_header = view.findViewById(R.id.tv_header);
+            et_group_name = view.findViewById(R.id.et_group_name);
             recyclerView = view.findViewById(R.id.rv_list);
             userList = new ArrayList<>();
             selectedUsers = new ArrayList<>();
@@ -148,5 +169,9 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
         } else {
             iv_done.setVisibility(View.GONE);
         }
+    }
+
+    private void makeToast(View view, String token) {
+        Toast.makeText(view.getContext(), token, Toast.LENGTH_SHORT).show();
     }
 }

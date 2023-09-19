@@ -89,7 +89,6 @@ public class OnBoardingActivity extends AppCompatActivity {
             if (newAuthToken != null && !newAuthToken.isEmpty() && !newAuthToken.startsWith("Failed")) {
                 myPreferences.setAuthToken(newAuthToken);
                 myPreferences.setLoggedInUserId(newUserId);
-                makeToast(newAuthToken);
                 startActivity(new Intent(this, FinanceRoomActivity.class));
                 finish();
             }

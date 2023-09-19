@@ -16,7 +16,7 @@
         android:windowSoftInputMode="stateHidden"
         tools:targetApi="31">
         <activity
-            android:name=".activities.TransactionSplit"
+            android:name=".activities.TransactionChat"
             android:exported="false" />
         <activity
             android:name=".activities.FinanceRoomActivity"

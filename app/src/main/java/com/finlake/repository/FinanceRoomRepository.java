@@ -54,7 +54,9 @@ public class FinanceRoomRepository {
             @Override
             public void onResponse(@NonNull Call<List<FinanceRoomResponse>> call, @NonNull Response<List<FinanceRoomResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    System.out.println(response.body());
+                    for(FinanceRoomResponse financeRoomResponse:response.body()){
+                        System.out.println(financeRoomResponse);
+                    }
                     financeRoomInterface.onResponseList(response.body());
                 } else if (response.code() == 401) { // Unauthenticated
                     financeRoomInterface.redirectToLogin();

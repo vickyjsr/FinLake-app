@@ -5,20 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    android:focusableInTouchMode="true"
     android:clickable="true"
     android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".activities.OnBoardingActivity">
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/iv_mascot"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="20dp"-->
-    <!--        android:background="@drawable/yeti_mascot_1"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <include
         android:id="@+id/iv_mascot"
@@ -40,8 +30,9 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/card_corner"
         android:hint="Email"
-        android:text="gourav@gmail.com"
+        android:inputType="textEmailAddress"
         android:padding="@dimen/_13sdp"
+        android:text="gourav@gmail.com"
         android:textColorHint="#4C4242"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,10 +47,10 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/card_corner"
-        android:text="1234"
         android:hint="Password"
         android:inputType="textPassword"
         android:padding="@dimen/_13sdp"
+        android:text="1234"
         android:textColorHint="#4C4242"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
