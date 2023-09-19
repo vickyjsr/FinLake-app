@@ -1,11 +1,9 @@
 package com.finlake.repository;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.finlake.SharedPreferenceManager;
 import com.finlake.interfaces.UserResponseInterface;
 import com.finlake.models.UserResponse;
 import com.finlake.retorfit.RetrofitClientInstance;
@@ -23,22 +21,17 @@ public class UserRepository {
 
     }
 
-    public void getUsers(String authToken, UserResponseInterface userResponseInterface) {
+    public void getUsers(String authToken, String id, UserResponseInterface userResponseInterface) {
         UserService userService = RetrofitClientInstance.getInstance().create(UserService.class);
-        Call<List<UserResponse>> initiateLogin = userService.getAllUsers("Bearer " + authToken);
-        Log.d("ljdbsnddjbhasdjns", "getUsers: "+authToken);
+        Call<List<UserResponse>> initiateLogin = userService.getAllUsersFiltered("Bearer " + authToken, id);
         initiateLogin.enqueue(new Callback<List<UserResponse>>() {
             @Override
             public void onResponse(@NonNull Call<List<UserResponse>> call, @NonNull Response<List<UserResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                        userResponseInterface.onResponse(response.body());
-                }
-                else if (response.code()==401 || response.code()==403){
-                    Log.d("checkinglogout", "onResponse: checking calls");
+                    userResponseInterface.onResponse(response.body());
+                } else if (response.code() == 401) {
                     userResponseInterface.redirectToLogin();
-                }
-                else {
-                    Log.d("checkingcalls", "onChanged: Failure response from api" + response.message());
+                } else {
                     userResponseInterface.onFailure(new Throwable(response.message()));
                 }
             }

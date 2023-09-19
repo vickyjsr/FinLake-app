@@ -1,8 +1,6 @@
 package com.finlake.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,9 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.finlake.R;
-import com.finlake.SharedPreferenceManager;
+import com.finlake.MyPreferences;
 import com.finlake.adapters.UserAdapter;
 import com.finlake.interfaces.OnClickSelectionListener;
 import com.finlake.models.UserResponse;
@@ -27,7 +26,7 @@ public class UserActivity extends AppCompatActivity implements OnClickSelectionL
     RecyclerView recyclerView;
     UserAdapter userAdapter;
     List<UserResponse> userList;
-    SharedPreferenceManager sharedPreferenceManager;
+    MyPreferences myPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +37,12 @@ public class UserActivity extends AppCompatActivity implements OnClickSelectionL
     }
 
     private void setUpListeners() {
-        Log.d("checkingcalls", "setUpListeners:gjgcfxgchjgvvgcch ");
-        String authToken = sharedPreferenceManager.getAuthToken();
-        userViewModel.getAllUsers(authToken);
+        String authToken = myPreferences.getAuthToken();
+        String userId = myPreferences.getLoggedInUserId();
+        if (authToken == null || userId == null) {
+            redirectToLoginPage();
+        }
+        userViewModel.getAllUsers(authToken, userId);
 
         userViewModel.getAllUsersList().observe(this, listUsers -> {
             Log.d("checkingcalls", "setUpListeners: " + listUsers);
@@ -50,7 +52,7 @@ public class UserActivity extends AppCompatActivity implements OnClickSelectionL
 
         userViewModel.getTokenFailure().observe(this, tokenFailure -> {
             if (tokenFailure) {
-                sharedPreferenceManager.setAuthToken(null);
+                myPreferences.setAuthToken(null);
                 startActivity(new Intent(this, OnBoardingActivity.class));
                 finish();
             }
@@ -59,8 +61,8 @@ public class UserActivity extends AppCompatActivity implements OnClickSelectionL
     }
 
     private void setUpViews() {
-        sharedPreferenceManager = SharedPreferenceManager.getInstance();
-        sharedPreferenceManager.init(this);
+        myPreferences = MyPreferences.getInstance(this);
+
         recyclerView = findViewById(R.id.rv_list);
         userList = new ArrayList<>();
         userAdapter = new UserAdapter(userList, this);
@@ -68,6 +70,11 @@ public class UserActivity extends AppCompatActivity implements OnClickSelectionL
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(userAdapter);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+    }
+
+    private void redirectToLoginPage() {
+        startActivity(new Intent(this, OnBoardingActivity.class));
+        finish();
     }
 
     @Override

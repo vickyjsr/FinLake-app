@@ -10,7 +10,9 @@ import com.finlake.interfaces.UserResponseInterface;
 import com.finlake.models.UserResponse;
 import com.finlake.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserViewModel extends ViewModel {
 
@@ -23,8 +25,8 @@ public class UserViewModel extends ViewModel {
         userRepository = new UserRepository();
     }
 
-    public void getAllUsers(String authToken) {
-        userRepository.getUsers(authToken, new UserResponseInterface() {
+    public void getAllUsers(String authToken, String id) {
+        userRepository.getUsers(authToken, id, new UserResponseInterface() {
             @Override
             public void onResponse(List<UserResponse> userResponse) {
                 listMutableLiveData.postValue(userResponse);
@@ -32,9 +34,7 @@ public class UserViewModel extends ViewModel {
 
             @Override
             public void onFailure(Throwable throwable) {
-//                error message
                 mFailureResult.setValue(throwable.getLocalizedMessage());
-                Log.d("ljdbsnddjbhasdjns", "onFailure: " + throwable.getLocalizedMessage());
             }
 
             @Override

@@ -5,8 +5,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -20,8 +18,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.finlake.Constants.Constant;
 import com.finlake.R;
-import com.finlake.SharedPreferenceManager;
+import com.finlake.MyPreferences;
 import com.finlake.viewmodels.OnBoardingViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -32,12 +31,11 @@ public class OnBoardingActivity extends AppCompatActivity {
 
     ImageView iv_bear, iv_shutter;
     View layout;
-    TextInputEditText et_email, et_password;
+    EditText et_email, et_password;
     TextInputLayout password_toggle;
     Button login;
-    TextView tv_token;
     OnBoardingViewModel mOnBoardingViewModel;
-    SharedPreferenceManager sharedPreferenceManager;
+    MyPreferences myPreferences;
     boolean shutter_up = true, toggle_shutter_up = true, password_visible = false;
     private final int[] svgResources = {R.drawable.yeti_mascot_1, R.drawable.yeti_mascot_4};
     private int toggle_eyes = 0;
@@ -46,59 +44,59 @@ public class OnBoardingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
-
         setUpViews();
         listeners();
     }
 
     private void setUpViews() {
-        sharedPreferenceManager = SharedPreferenceManager.getInstance();
-        sharedPreferenceManager.init(this);
-
+        myPreferences = MyPreferences.getInstance(this);
         layout = findViewById(R.id.iv_mascot);
         iv_shutter = layout.findViewById(R.id.iv_shutter);
         iv_bear = layout.findViewById(R.id.iv_bear);
         et_email = findViewById(R.id.et_login_email);
         et_password = findViewById(R.id.et_login_password);
-        password_toggle = findViewById(R.id.password_toggle);
         login = findViewById(R.id.b_login);
-        tv_token = findViewById(R.id.tv_token);
 
         ValueAnimator blinkAnimator = createBlinkAnimator();
         blinkAnimator.start();
+
         mOnBoardingViewModel = new ViewModelProvider(this).get(OnBoardingViewModel.class);
     }
 
     private void listeners() {
-        String authToken = sharedPreferenceManager.getAuthToken();
-        if (authToken != null && !authToken.isEmpty() && !authToken.startsWith("Failed")) {
+        String authToken = myPreferences.getAuthToken();
+        String userId = myPreferences.getLoggedInUserId();
+        if (userId != null && authToken != null && !authToken.isEmpty() && !authToken.startsWith("Failed")) {
             startActivity(new Intent(this, FinanceRoomActivity.class));
             finish();
         }
 
-        login.setOnClickListener(view -> mOnBoardingViewModel.login(et_email.getText().toString(), et_password.getText().toString()));
+        login.setOnClickListener(view -> {
+            if (et_email.getText() != null && et_password.getText() != null) {
+                mOnBoardingViewModel.login(et_email.getText().toString(), et_password.getText().toString());
+            }
+        });
 
 //        this method is not the correct way
         make_shutter_animation(740, false, 1);
         iv_shutter.setVisibility(View.VISIBLE);
 
-        mOnBoardingViewModel.getLoginResult().observe(this, token -> {
-            Log.d("checkingcalls", "onChanged: activity" + token);
-            if (!token.isEmpty() && !token.startsWith("Failed")) {
-                sharedPreferenceManager.setAuthToken(token);
-                tv_token.setText(token);
-                makeToast(token);
+        mOnBoardingViewModel.getLoginResult().observe(this, hashMap -> {
+            Log.d("checkinwsdsgcalls", "listeners: " + hashMap.keySet());
+            String newAuthToken = hashMap.get(Constant.AUTH_TOKEN);
+            String newUserId = hashMap.get(Constant.USER_ID);
+            Log.d("checkinwsdsgcalls", "onChanged: activity newAuthToken: " + newAuthToken + "      userId: " + newUserId);
+            if (newAuthToken != null && !newAuthToken.isEmpty() && !newAuthToken.startsWith("Failed")) {
+                myPreferences.setAuthToken(newAuthToken);
+                myPreferences.setLoggedInUserId(newUserId);
+                makeToast(newAuthToken);
                 startActivity(new Intent(this, FinanceRoomActivity.class));
                 finish();
             }
-            makeToast(token);
         });
 
         et_password.setOnFocusChangeListener((view, hasFocus) -> {
-            if (password_visible) {
-                Log.d("jnacskmncsnms", "listeners: 11" + shutter_up + "kjnlmcmsk" + password_visible);
-            } else {
-                Log.d("jnacskmncsnms", "listeners: 111 going in ??" + shutter_up + "kjnlmcmsk" + password_visible);
+            if (!password_visible) {
                 int viewHeight = iv_shutter.getHeight();
                 iv_shutter.setVisibility(View.VISIBLE);
                 make_shutter_animation(viewHeight, shutter_up, 1000);

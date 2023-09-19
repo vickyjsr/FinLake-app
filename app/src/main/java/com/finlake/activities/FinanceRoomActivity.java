@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.finlake.R;
-import com.finlake.SharedPreferenceManager;
+import com.finlake.MyPreferences;
 import com.finlake.adapters.FinanceChatHeadAdapter;
 import com.finlake.adapters.FinanceRoomAdapter;
 import com.finlake.fragments.UserFragment;
@@ -32,8 +33,9 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
     FragmentTransaction fragmentTransaction;
     Fragment fragment;
     RoomViewModel roomViewModel;
-    SharedPreferenceManager sharedPreferenceManager;
+    MyPreferences myPreferences;
     String authToken;
+    String userId;
     List<FinanceRoomResponse> financeRoomList;
 
     RecyclerView rv_finance_room, rv_finance_chat_head;
@@ -50,8 +52,12 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
 
     private void setUpViews() {
         iv_plus = findViewById(R.id.iv_plus);
-        sharedPreferenceManager = SharedPreferenceManager.getInstance();
-        authToken = sharedPreferenceManager.getAuthToken();
+        myPreferences = MyPreferences.getInstance(this);
+        authToken = myPreferences.getAuthToken();
+        userId = myPreferences.getLoggedInUserId();
+        if (authToken == null || userId == null) {
+            redirectToLoginPage();
+        }
         rv_finance_room = findViewById(R.id.rv_finance_room);
         rv_finance_chat_head = findViewById(R.id.rv_split_heads);
         financeRoomList = new ArrayList<>();
@@ -75,12 +81,13 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
             fragmentTransaction.add(R.id.container, fragment).commit();
         });
 
-//        todo remove hardcoding
-        roomViewModel.getAllFinanceRoomByUserId(authToken, "dd78fd8a-8006-4ad5-a82a-3c499c2b08e4");
+        int page = 0;
+        int pageSize = 10;
+        boolean pagination = true;
+        String status = "active";
+        roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
 
         roomViewModel.getFinanceRoomByUserId().observe(this, financeRoomResponses -> {
-            System.out.println("financeRoomResponses " + financeRoomResponses.size());
-            System.out.println("financeRoomResponses " + financeRoomResponses.toString());
             financeRoomAdapter.setItems(financeRoomResponses);
             financeRoomAdapter.notifyDataSetChanged();
         });
@@ -88,6 +95,17 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
         roomViewModel.getErrorMessage().observe(this, s -> {
             Toast.makeText(this, "failed " + s, Toast.LENGTH_SHORT).show();
         });
+
+        roomViewModel.getTokenFailure().observe(this, b -> {
+            if (b) {
+                redirectToLoginPage();
+            }
+        });
+    }
+
+    private void redirectToLoginPage() {
+        startActivity(new Intent(this, OnBoardingActivity.class));
+        finish();
     }
 
     @Override

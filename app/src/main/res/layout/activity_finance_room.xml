@@ -17,8 +17,8 @@
         android:background="@color/background_color"
         android:gravity="center_vertical"
         android:padding="@dimen/_9sdp"
-        android:textColor="@color/white"
-        android:text="Split"
+        android:text="FinLake"
+        android:textColor="@color/card_color"
         android:textSize="@dimen/_24sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,9 +28,9 @@
         android:id="@+id/rv_split_heads"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginStart="@dimen/_11sdp"
         android:layout_marginTop="@dimen/_3sdp"
-        android:layout_marginEnd="@dimen/_6sdp"
+        android:layout_marginEnd="@dimen/_11sdp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +43,8 @@
         android:layout_marginStart="@dimen/_6sdp"
         android:layout_marginTop="@dimen/_3sdp"
         android:layout_marginEnd="@dimen/_6sdp"
-        android:layout_marginBottom="@dimen/_56sdp"
+        android:layout_marginBottom="@dimen/_6sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_split_heads" />
@@ -56,14 +57,5 @@
         android:background="@drawable/plus_sign"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/bottom_guideline_h1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_finance_room" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_3sdp"
-    android:background="@color/background_color"
-    android:foreground="?attr/selectableItemBackground"
+    android:background="@drawable/card_corner"
     android:padding="@dimen/_11sdp">
 
     <ImageView
@@ -26,7 +25,7 @@
         android:layout_marginStart="@dimen/_19sdp"
         android:layout_marginTop="10dp"
         android:text="Goa Plan"
-        android:textColor="@color/white"
+        android:textColor="@color/text_heading"
         android:textSize="@dimen/_13sdp"
         app:layout_constraintStart_toEndOf="@id/iv_profile_pic"
         app:layout_constraintTop_toTopOf="@id/iv_profile_pic" />
@@ -48,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_11sdp"
         android:text="12/09/23"
-        android:textColor="@color/white"
+        android:textColor="@color/text_heading"
         android:textSize="@dimen/_9sdp"
         app:layout_constraintBottom_toBottomOf="@id/iv_profile_pic"
         app:layout_constraintEnd_toEndOf="parent"

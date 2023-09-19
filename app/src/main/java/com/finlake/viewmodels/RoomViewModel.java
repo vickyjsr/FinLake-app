@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.finlake.interfaces.FinanceRoomInterface;
 import com.finlake.models.FinanceRoomRequestData;
 import com.finlake.models.FinanceRoomResponse;
-import com.finlake.models.RoomUserResponse;
-import com.finlake.repository.RoomRepository;
+import com.finlake.repository.FinanceRoomRepository;
 
 import java.util.List;
 
@@ -18,14 +17,14 @@ public class RoomViewModel extends ViewModel {
     MutableLiveData<List<FinanceRoomResponse>> roomUserResponseMutableLiveData = new MutableLiveData<>();
     MutableLiveData<String> mFailureResult = new MutableLiveData<>();
     MutableLiveData<Boolean> mTokenFailure = new MutableLiveData<>(false);
-    RoomRepository roomRepository;
+    FinanceRoomRepository financeRoomRepository;
 
     public RoomViewModel() {
-        roomRepository = new RoomRepository();
+        financeRoomRepository = new FinanceRoomRepository();
     }
 
     public void createFinanceRoom(String authToken, FinanceRoomRequestData financeRoomRequestData) {
-        roomRepository.createFinanceRoom(authToken, financeRoomRequestData, new FinanceRoomInterface() {
+        financeRoomRepository.createFinanceRoom(authToken, financeRoomRequestData, new FinanceRoomInterface() {
             @Override
             public void onResponse(FinanceRoomResponse financeRoomResponse) {
                 financeMutableLiveData.postValue(financeRoomResponse);
@@ -48,8 +47,8 @@ public class RoomViewModel extends ViewModel {
         });
     }
 
-    public void getAllFinanceRoomByUserId(String authToken, String userId) {
-        roomRepository.getAllFinanceRoomByUserId(authToken, userId, new FinanceRoomInterface() {
+    public void getAllFinanceRoomByUserId(int page, int pageSize, boolean pagination, String status, String authToken, String userId) {
+        financeRoomRepository.getAllFinanceRoomByUserId(page, pageSize,pagination,status, authToken, userId, new FinanceRoomInterface() {
             @Override
             public void onResponse(FinanceRoomResponse financeRoomResponse) {
 
@@ -84,7 +83,7 @@ public class RoomViewModel extends ViewModel {
         return mTokenFailure;
     }
 
-    public LiveData<String> getErrorMessage(){
+    public LiveData<String> getErrorMessage() {
         return mFailureResult;
     }
 }

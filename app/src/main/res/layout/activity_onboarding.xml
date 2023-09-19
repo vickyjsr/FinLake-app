@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:focusableInTouchMode="true"
     android:clickable="true"
     android:focusable="true"
-    android:focusableInTouchMode="true"
     tools:context=".activities.OnBoardingActivity">
 
     <!--    <ImageView-->
@@ -24,74 +25,56 @@
         layout="@layout/bear_mascot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/_86sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/email"
+    <EditText
+        android:id="@+id/et_login_email"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_46sdp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:textColorHint="#B9B8B8"
+        android:background="@drawable/card_corner"
+        android:hint="Email"
+        android:text="gourav@gmail.com"
+        android:padding="@dimen/_13sdp"
+        android:textColorHint="#4C4242"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_mascot">
+        app:layout_constraintTop_toBottomOf="@+id/iv_mascot" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_login_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:text="gourav@gmail.com" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/password_toggle"
+    <EditText
+        android:id="@+id/et_login_password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_46sdp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:textColorHint="#B9B8B8"
+        android:background="@drawable/card_corner"
+        android:text="1234"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="@dimen/_13sdp"
+        android:textColorHint="#4C4242"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email"
-        app:passwordToggleEnabled="true">
+        app:layout_constraintTop_toBottomOf="@+id/et_login_email"
+        app:passwordToggleEnabled="true" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_login_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:text="1234" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/b_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:background="@drawable/card_corner"
         android:text="Login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password_toggle" />
-
-    <TextView
-        android:id="@+id/tv_token"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:gravity="center"
-        android:text="Token"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/b_login" />
+        app:layout_constraintTop_toBottomOf="@id/et_login_password" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

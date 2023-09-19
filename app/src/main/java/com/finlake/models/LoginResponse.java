@@ -10,11 +10,15 @@ public class LoginResponse {
     @SerializedName("errorMessage")
     String errorMessage;
 
+    @SerializedName("user_id")
+    String user_id;
+
     public LoginResponse() {
     }
 
-    public LoginResponse(String token, String errorMessage) {
+    public LoginResponse(String token, String errorMessage, String user_id) {
         this.token = token;
+        this.user_id = user_id;
         this.errorMessage = errorMessage;
     }
 
@@ -32,5 +36,13 @@ public class LoginResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 }

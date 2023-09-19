@@ -14,6 +14,8 @@ public class FinanceRoomResponse {
 
     private String room_type;
 
+    private String status;
+
     private String created_at;
 
     private String updated_at;
@@ -22,11 +24,12 @@ public class FinanceRoomResponse {
 
     }
 
-    public FinanceRoomResponse(String id, String name, UserResponse created_by, String room_type, String created_at, String updated_at) {
+    public FinanceRoomResponse(String id, String name, UserResponse created_by, String room_type, String status, String created_at, String updated_at) {
         this.id = id;
         this.name = name;
         this.created_by = created_by;
         this.room_type = room_type;
+        this.status = status;
         this.created_at = created_at;
         this.updated_at = updated_at;
     }
@@ -63,6 +66,14 @@ public class FinanceRoomResponse {
         this.room_type = room_type;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getCreated_at() {
         return created_at;
     }
@@ -79,16 +90,8 @@ public class FinanceRoomResponse {
         this.updated_at = updated_at;
     }
 
-    @NonNull
     @Override
     public String toString() {
-        return "FinanceRoomResponse{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", created_by='" + created_by + '\'' +
-                ", room_type='" + room_type + '\'' +
-                ", created_at='" + created_at + '\'' +
-                ", updated_at='" + updated_at + '\'' +
-                '}';
+        return "FinanceRoomResponse{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", created_by=" + created_by + ", room_type='" + room_type + '\'' + ", status='" + status + '\'' + ", created_at='" + created_at + '\'' + ", updated_at='" + updated_at + '\'' + '}';
     }
 }

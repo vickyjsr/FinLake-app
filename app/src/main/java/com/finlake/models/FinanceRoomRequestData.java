@@ -8,9 +8,12 @@ public class FinanceRoomRequestData {
     private FinanceRoomBody financeRoomBody;
     private List<UserResponse> userResponseList;
 
-    public FinanceRoomRequestData(FinanceRoomBody financeRoomBody, List<UserResponse> userResponseList) {
+    private String userId;
+
+    public FinanceRoomRequestData(FinanceRoomBody financeRoomBody, List<UserResponse> userResponseList, String userId) {
         this.financeRoomBody = financeRoomBody;
         this.userResponseList = userResponseList;
+        this.userId = userId;
     }
 
     public FinanceRoomBody getFinanceRoomBody() {
@@ -29,12 +32,20 @@ public class FinanceRoomRequestData {
         this.userResponseList = userResponseList;
     }
 
-    @NonNull
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "FinanceRoomRequestData{" +
-                "financeRoomBody=" + financeRoomBody.toString() +
-                ", userResponseList=" + userResponseList.toString() +
+                "financeRoomBody=" + financeRoomBody +
+                ", userResponseList=" + userResponseList +
+                ", userId='" + userId + '\'' +
                 '}';
     }
 }

@@ -3,7 +3,6 @@ package com.finlake.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,15 +17,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.finlake.R;
-import com.finlake.SharedPreferenceManager;
+import com.finlake.MyPreferences;
 import com.finlake.activities.OnBoardingActivity;
 import com.finlake.adapters.UserAdapter;
+import com.finlake.enums.GlobalEnum;
 import com.finlake.interfaces.OnBackPressFrag;
 import com.finlake.interfaces.OnClickSelectionListener;
 import com.finlake.models.FinanceRoomBody;
 import com.finlake.models.FinanceRoomRequestData;
 import com.finlake.models.FinanceRoomResponse;
-import com.finlake.models.RoomUserResponse;
 import com.finlake.models.UserResponse;
 import com.finlake.viewmodels.RoomViewModel;
 import com.finlake.viewmodels.UserViewModel;
@@ -42,7 +41,7 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
     RecyclerView recyclerView;
     UserAdapter userAdapter;
     List<UserResponse> userList, selectedUsers;
-    SharedPreferenceManager sharedPreferenceManager;
+    MyPreferences myPreferences;
     ImageView iv_done;
     OnBackPressFrag onBackPressFrag;
 
@@ -66,11 +65,14 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
     }
 
     private void setUpListeners(View view) {
-        String authToken = sharedPreferenceManager.getAuthToken();
-        userViewModel.getAllUsers(authToken);
+        String authToken = myPreferences.getAuthToken();
+        String userId = myPreferences.getLoggedInUserId();
+        if (authToken == null || userId == null) {
+            redirectToLoginPage(view);
+        }
+        userViewModel.getAllUsers(authToken, userId);
 
         userViewModel.getAllUsersList().observe(getViewLifecycleOwner(), listUsers -> {
-            Log.d("checkingcalls", "setUpListeners: " + listUsers);
             userAdapter.setItems(listUsers);
             userAdapter.notifyDataSetChanged();
         });
@@ -78,7 +80,7 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
         userViewModel.getTokenFailure().observe(getViewLifecycleOwner(), tokenFailure -> {
             if (tokenFailure) {
                 if (this.getActivity() != null) {
-                    sharedPreferenceManager.setAuthToken(null);
+                    myPreferences.setAuthToken(null);
                     startActivity(new Intent(this.getActivity(), OnBoardingActivity.class));
                     this.getActivity().finish();
                 }
@@ -86,19 +88,27 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
         });
 
         iv_done.setOnClickListener(v -> {
-            Toast.makeText(v.getContext(), "skjznvkdhjk hjvaskncj", Toast.LENGTH_SHORT).show();
-            FinanceRoomBody financeRoomBody = new FinanceRoomBody("xyz", "dd78fd8a-8006-4ad5-a82a-3c499c2b08e4", "group");
+            String room_type = GlobalEnum.ONE_ON_ONE.getValue();
+            if (selectedUsers.size() >= 2) {
+                room_type = GlobalEnum.GROUP.getValue();
+            }
+            FinanceRoomBody financeRoomBody = new FinanceRoomBody("xbhjbasyz", userId, room_type);
             if (!selectedUsers.isEmpty()) {
-                FinanceRoomRequestData financeRoomRequestData = new FinanceRoomRequestData(financeRoomBody, selectedUsers);
+                FinanceRoomRequestData financeRoomRequestData = new FinanceRoomRequestData(financeRoomBody, selectedUsers, userId);
                 roomViewModel.createFinanceRoom(authToken, financeRoomRequestData);
                 onBackPressFrag.onBack();
             }
         });
 
+        int page = 0;
+        int pageSize = 10;
+        boolean pagination = true;
+        String status = "active";
+
         roomViewModel.getFinanceRoomResponse().observe(getViewLifecycleOwner(), new Observer<FinanceRoomResponse>() {
             @Override
             public void onChanged(FinanceRoomResponse financeRoomResponse) {
-                roomViewModel.getAllFinanceRoomByUserId(authToken, "dd78fd8a-8006-4ad5-a82a-3c499c2b08e4");
+                roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
             }
         });
 
@@ -106,8 +116,7 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
 
     private void setUpViews(View view) {
         if (view.getContext() != null) {
-            sharedPreferenceManager = SharedPreferenceManager.getInstance();
-            sharedPreferenceManager.init(view.getContext());
+            myPreferences = MyPreferences.getInstance(view.getContext());
             iv_done = view.findViewById(R.id.iv_done);
             recyclerView = view.findViewById(R.id.rv_list);
             userList = new ArrayList<>();
@@ -121,6 +130,11 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
         }
     }
 
+    private void redirectToLoginPage(View view) {
+        startActivity(new Intent(view.getContext(), OnBoardingActivity.class));
+        onBackPressFrag.onBack();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -128,13 +142,11 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
 
     @Override
     public void selectedItem(List<UserResponse> selectedUsers) {
-        if (selectedUsers.size() > 2) {
+        if (selectedUsers.size() >= 2) {
             this.selectedUsers = selectedUsers;
             iv_done.setVisibility(View.VISIBLE);
         } else {
-            this.selectedUsers.clear();
             iv_done.setVisibility(View.GONE);
         }
     }
-
 }

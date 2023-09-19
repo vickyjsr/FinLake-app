@@ -1,10 +1,15 @@
 package com.finlake.adapters;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.finlake.R;
@@ -31,6 +36,18 @@ public class FinanceChatHeadAdapter extends RecyclerView.Adapter<FinanceChatHead
 
         public FinanceChatHeadViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("meadosmckfvgweadc", "onClick: sfdj vk meadosmckfvgweadc");
+                    final Dialog dialog = new Dialog(itemView.getContext());
+                    dialog.setContentView(R.layout.tooltip_dropdown);
+
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+                }
+            });
         }
     }
 }

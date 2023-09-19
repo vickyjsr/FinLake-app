@@ -18,5 +18,5 @@ public interface FinanceRoomService {
     Call<FinanceRoomResponse> createFinanceRoom(@Header("Authorization") String authToken, @Body FinanceRoomRequestData financeRoomRequestData);
 
     @GET("filterUserFromFinanceRoom")
-    Call<List<FinanceRoomResponse>> getAllFinanceRoomByUserId(@Header("Authorization") String authToken, @Query("id") String id);
+    Call<List<FinanceRoomResponse>> getAllFinanceRoomByUserId(@Header("Authorization") String authToken, @Query(value = "page") int page, @Query(value = "pageSize") int pageSize, @Query(value = "pagination") boolean pagination, @Query(value = "status") String status, @Query("id") String id);
 }

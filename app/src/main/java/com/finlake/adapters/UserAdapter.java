@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,12 +76,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 }
                 if (!selectedUsers.isEmpty()) onClickSelectionListener.selectedItem(selectedUsers);
             });
-
         }
 
         public void setUserData(int position) {
             UserResponse userResponse = listUsers.get(position);
-            Log.d("checkingcalls", "setUserData: " + userResponse);
             email.setText(userResponse.getEmail());
             name.setText(userResponse.getName());
             mobile.setText(userResponse.getMobile_number());
