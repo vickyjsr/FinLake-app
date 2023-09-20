@@ -34,6 +34,7 @@ import com.finlake.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 public class UserFragment extends Fragment implements OnClickSelectionListener {
 
@@ -48,6 +49,9 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
     OnBackPressFrag onBackPressFrag;
     EditText et_group_name;
     TextView tv_header;
+    boolean showEditImage = false;
+    //    todo add logic for hitting apis
+    Timer lastHitAt;
 
     public UserFragment(OnBackPressFrag onBackPressFrag) {
         this.onBackPressFrag = onBackPressFrag;
@@ -75,14 +79,28 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
             redirectToLoginPage(view);
         }
 
-        iv_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        iv_edit.setOnClickListener(view1 -> {
+            if (!showEditImage) {
                 tv_header.setVisibility(View.INVISIBLE);
                 tv_header.setClickable(false);
                 tv_header.setFocusable(false);
+                iv_edit.setBackgroundResource(R.drawable.done);
                 et_group_name.setVisibility(View.VISIBLE);
+            } else {
+                tv_header.setVisibility(View.VISIBLE);
+                if (et_group_name.getText() != null && !et_group_name.getText().toString().trim().isEmpty()) {
+                    Log.d("sdjfnjhnd", "setUpListeners: checking if" + et_group_name.getText().toString().trim().isEmpty() + "  " + et_group_name.getText().toString());
+                    tv_header.setText(et_group_name.getText().toString());
+                } else {
+                    Log.d("sdjfnjhnd", "setUpListeners: checking else");
+                    tv_header.setText("Create Split Groups");
+                }
+                tv_header.setClickable(true);
+                tv_header.setFocusable(true);
+                iv_edit.setBackgroundResource(R.drawable.edit);
+                et_group_name.setVisibility(View.INVISIBLE);
             }
+            showEditImage = !showEditImage;
         });
 
         userViewModel.getAllUsers(authToken, userId);
@@ -109,12 +127,13 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
             }
             if (et_group_name.getText() == null) {
                 makeToast(view, "Group Name is empty");
-            }
-            FinanceRoomBody financeRoomBody = new FinanceRoomBody(et_group_name.getText().toString(), userId, room_type);
-            if (!selectedUsers.isEmpty()) {
-                FinanceRoomRequestData financeRoomRequestData = new FinanceRoomRequestData(financeRoomBody, selectedUsers, userId);
-                roomViewModel.createFinanceRoom(authToken, financeRoomRequestData);
-                onBackPressFrag.onBack();
+            } else {
+                FinanceRoomBody financeRoomBody = new FinanceRoomBody(et_group_name.getText().toString(), userId, room_type);
+                if (!selectedUsers.isEmpty()) {
+                    FinanceRoomRequestData financeRoomRequestData = new FinanceRoomRequestData(financeRoomBody, selectedUsers, userId);
+                    roomViewModel.createFinanceRoom(authToken, financeRoomRequestData);
+                    onBackPressFrag.onBack();
+                }
             }
         });
 
