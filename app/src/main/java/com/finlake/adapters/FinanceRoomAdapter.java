@@ -47,8 +47,8 @@ public class FinanceRoomAdapter extends RecyclerView.Adapter<FinanceRoomAdapter.
         return financeRoomList.size();
     }
 
-    public void setItems(List<FinanceRoomResponse> financeRoomList) {
-        this.financeRoomList = financeRoomList;
+    public void setItems(List<FinanceRoomResponse> newFinanceRoomList) {
+        this.financeRoomList = newFinanceRoomList;
     }
 
     public class FinanceRoomViewHolder extends RecyclerView.ViewHolder {

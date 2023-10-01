@@ -3,6 +3,7 @@ package com.finlake.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,6 +26,7 @@ import com.finlake.adapters.UserAdapter;
 import com.finlake.enums.GlobalEnum;
 import com.finlake.interfaces.OnBackPressFrag;
 import com.finlake.interfaces.OnClickSelectionListener;
+import com.finlake.interfaces.PaginationScrollListener;
 import com.finlake.models.FinanceRoomBody;
 import com.finlake.models.FinanceRoomRequestData;
 import com.finlake.models.FinanceRoomResponse;
@@ -52,6 +54,9 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
     boolean showEditImage = false;
     //    todo add logic for hitting apis
     Timer lastHitAt;
+    LinearLayoutManager linear_layout_manager;
+    boolean isLoading = true;
+    int currentPage = 0;
 
     public UserFragment(OnBackPressFrag onBackPressFrag) {
         this.onBackPressFrag = onBackPressFrag;
@@ -138,17 +143,15 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
         });
 
         int page = 0;
-        int pageSize = 10;
+        int pageSize = 15;
         boolean pagination = true;
         String status = "active";
 
-        roomViewModel.getFinanceRoomResponse().observe(getViewLifecycleOwner(), new Observer<FinanceRoomResponse>() {
-            @Override
-            public void onChanged(FinanceRoomResponse financeRoomResponse) {
-                roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
-            }
-        });
 
+    }
+
+    private void loadNextPage(int page, int pageSize, boolean pagination, String status, String authToken, String userId) {
+        roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
     }
 
     private void setUpViews(View view) {
@@ -163,7 +166,8 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
             selectedUsers = new ArrayList<>();
             userAdapter = new UserAdapter(userList, this);
             recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+            linear_layout_manager = new LinearLayoutManager(view.getContext());
+            recyclerView.setLayoutManager(linear_layout_manager);
             recyclerView.setAdapter(userAdapter);
             userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
             roomViewModel = new ViewModelProvider(this).get(RoomViewModel.class);

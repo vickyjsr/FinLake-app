@@ -37,7 +37,7 @@ public class RoomViewModel extends ViewModel {
 
             @Override
             public void onFailure(Throwable throwable) {
-                mFailureResult.setValue(throwable.getLocalizedMessage());
+                mFailureResult.postValue(throwable.getLocalizedMessage());
             }
 
             @Override
@@ -48,7 +48,7 @@ public class RoomViewModel extends ViewModel {
     }
 
     public void getAllFinanceRoomByUserId(int page, int pageSize, boolean pagination, String status, String authToken, String userId) {
-        financeRoomRepository.getAllFinanceRoomByUserId(page, pageSize,pagination,status, authToken, userId, new FinanceRoomInterface() {
+        financeRoomRepository.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId, new FinanceRoomInterface() {
             @Override
             public void onResponse(FinanceRoomResponse financeRoomResponse) {
 
@@ -61,7 +61,7 @@ public class RoomViewModel extends ViewModel {
 
             @Override
             public void onFailure(Throwable throwable) {
-                mFailureResult.setValue(throwable.getLocalizedMessage());
+                mFailureResult.postValue(throwable.getLocalizedMessage());
             }
 
             @Override

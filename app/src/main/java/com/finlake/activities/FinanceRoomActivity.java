@@ -1,9 +1,11 @@
 package com.finlake.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,8 +14,10 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,6 +28,7 @@ import com.finlake.adapters.FinanceRoomAdapter;
 import com.finlake.fragments.UserFragment;
 import com.finlake.interfaces.OnBackPressFrag;
 import com.finlake.interfaces.OnClickFinanceRoomListener;
+import com.finlake.interfaces.PaginationScrollListener;
 import com.finlake.models.FinanceRoomResponse;
 import com.finlake.viewmodels.RoomViewModel;
 
@@ -47,6 +52,12 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
     FinanceChatHeadAdapter financeChatHeadAdapter;
     ImageView iv_refresh, iv_logout;
     ObjectAnimator rotation;
+    LinearLayoutManager vertical_linear_layout_manager;
+    boolean isLoading = false;
+    int currentPage = 0;
+    boolean isScrolling = false;
+    private boolean isLastPage = false;
+    private int visibleItems, totalItems, scrollOutItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +85,8 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
 //        todo change this
         financeChatHeadAdapter = new FinanceChatHeadAdapter();
         rv_finance_room.setHasFixedSize(true);
-        rv_finance_room.setLayoutManager(new LinearLayoutManager(this));
+        vertical_linear_layout_manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rv_finance_room.setLayoutManager(vertical_linear_layout_manager);
         rv_finance_room.setAdapter(financeRoomAdapter);
         rv_finance_chat_head.setHasFixedSize(true);
         rv_finance_chat_head.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -102,21 +114,19 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
             fragmentTransaction.add(R.id.container, fragment).commit();
         });
 
-        int page = 0;
-        int pageSize = 10;
-        boolean pagination = true;
-        String status = "active";
-        roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
-
-        roomViewModel.getFinanceRoomByUserId().observe(this, financeRoomResponses -> {
-            new Handler().postDelayed(() -> {
-                if (rotation != null) {
-                    iv_refresh.setBackgroundResource(R.drawable.refresh);
-                    rotation.cancel();
-                }
-            }, 2000);
-            financeRoomAdapter.setItems(financeRoomResponses);
-            financeRoomAdapter.notifyDataSetChanged();
+        roomViewModel.getFinanceRoomByUserId().observe(this, new Observer<List<FinanceRoomResponse>>() {
+            @Override
+            public void onChanged(List<FinanceRoomResponse> financeRoomResponses) {
+                new Handler().postDelayed(() -> {
+                    if (rotation != null) {
+                        iv_refresh.setBackgroundResource(R.drawable.refresh);
+                        rotation.cancel();
+                    }
+                }, 2000);
+                int oldCount = financeRoomList.size();
+                financeRoomList.addAll(financeRoomResponses);
+                financeRoomAdapter.notifyDataSetChanged();
+            }
         });
 
         roomViewModel.getErrorMessage().observe(this, s -> {
@@ -128,6 +138,49 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
                 redirectToLoginPage();
             }
         });
+
+        loadFirstPage();
+
+        rv_finance_room.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScrolling = true;
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                visibleItems = vertical_linear_layout_manager.getChildCount();
+                totalItems = vertical_linear_layout_manager.getItemCount();
+                scrollOutItems = vertical_linear_layout_manager.findFirstVisibleItemPosition();
+                boolean isNotLoadingAndNotLastPage = !isLoading && !isLastPage;
+                boolean isAtLastItem = scrollOutItems + visibleItems >= totalItems;
+                boolean isNotAtBeginning = scrollOutItems >= 0;
+                boolean isTotalMoreThanVisible = totalItems >= 10;
+                boolean shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning && isTotalMoreThanVisible && isScrolling;
+                if (shouldPaginate && !recyclerView.canScrollVertically(1)) {
+                    isScrolling = false;
+                    currentPage += 1;
+                    loadNextPage(currentPage, 10, true, "active", authToken, userId);
+                }
+            }
+        });
+    }
+
+    private void loadFirstPage() {
+        int page = 0;
+        int pageSize = 10;
+        boolean pagination = true;
+        String status = "active";
+        roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
+    }
+
+    private void loadNextPage(int currentPage, int pageSize, boolean pagination, String status, String authToken, String userId) {
+        Log.d("jfbnfvskedn", "loadNextPage: " + currentPage);
+        roomViewModel.getAllFinanceRoomByUserId(currentPage, pageSize, pagination, status, authToken, userId);
     }
 
     private void redirectToLoginPage() {
@@ -167,10 +220,11 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
     }
 
     public void setAllViewModels(boolean animateLoader) {
+        financeRoomList.clear();
         if (animateLoader) {
             iv_refresh.setBackgroundResource(R.drawable.refresh_animation_state);
             rotation = ObjectAnimator.ofFloat(iv_refresh, "rotation", 0f, 360f);
-            rotation.setDuration(3000); // 2 seconds for one complete rotation
+            rotation.setDuration(3000); // 3 seconds for one complete rotation
             rotation.setRepeatCount(ObjectAnimator.INFINITE);
             rotation.setInterpolator(new LinearInterpolator());
             rotation.start();
@@ -179,6 +233,7 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
         int pageSize = 10;
         boolean pagination = true;
         String status = "active";
+        currentPage = 0;
         roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
     }
 
