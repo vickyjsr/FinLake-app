@@ -15,5 +15,7 @@ public class TransactionChat extends AppCompatActivity {
         setContentView(R.layout.activity_transaction_chat);
         String finance_room_id = getIntent().getStringExtra("finance_room_id");
         Toast.makeText(this, finance_room_id, Toast.LENGTH_SHORT).show();
+
+
     }
 }
