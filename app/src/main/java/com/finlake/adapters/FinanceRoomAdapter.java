@@ -1,6 +1,5 @@
 package com.finlake.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +69,7 @@ public class FinanceRoomAdapter extends RecyclerView.Adapter<FinanceRoomAdapter.
             FinanceRoomResponse financeRoomResponse = financeRoomList.get(position);
             tv_room_name.setText(financeRoomResponse.getName());
 
-            if (Objects.equals(financeRoomResponse.getRoom_type(), "GROUP")) {
+            if (Objects.equals(financeRoomResponse.getRoomType(), "GROUP")) {
                 iv_room_type.setBackgroundResource(R.drawable.group_room);
                 iv_room_type.setVisibility(View.VISIBLE);
             }

@@ -42,7 +42,7 @@ public class UserActivity extends AppCompatActivity implements OnClickSelectionL
         if (authToken == null || userId == null) {
             redirectToLoginPage();
         }
-        userViewModel.getAllUsers(authToken, userId);
+        userViewModel.getAllUsers(authToken, userId, 0, 20);
 
         userViewModel.getAllUsersList().observe(this, listUsers -> {
             Log.d("checkingcalls", "setUpListeners: " + listUsers);

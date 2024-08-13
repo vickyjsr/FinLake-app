@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.finlake.Constants.Constant;
 import com.finlake.interfaces.UserResponseInterface;
 import com.finlake.models.UserResponse;
 import com.finlake.repository.UserRepository;
@@ -25,8 +26,9 @@ public class UserViewModel extends ViewModel {
         userRepository = new UserRepository();
     }
 
-    public void getAllUsers(String authToken, String id) {
-        userRepository.getUsers(authToken, id, new UserResponseInterface() {
+    public void getAllUsers(String authToken, String id, int page, int pageSize) {
+        String requestId = Constant.generateRequestId();
+        userRepository.getUsers(authToken, requestId, id, page, pageSize, new UserResponseInterface() {
             @Override
             public void onResponse(List<UserResponse> userResponse) {
                 listMutableLiveData.postValue(userResponse);

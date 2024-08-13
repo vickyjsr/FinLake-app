@@ -26,7 +26,8 @@ public class LoginRepository {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d("checkingcalls", "onChanged: Success response from api" + response.body().getToken());
+                    LoginResponse loginResponse = response.body();
+                    Log.d("checkingcalls", "onChanged: Success response from api" + loginResponse);
                     loginResponseInterface.onResponse(response.body());
                 } else {
                     Log.d("checkingcalls", "onChanged: Failure response from api" + response.message());

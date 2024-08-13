@@ -14,6 +14,7 @@ import com.finlake.repository.LoginRepository;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class OnBoardingViewModel extends ViewModel {
     MutableLiveData<HashMap<String, String>> mLoginResultMutableLiveData = new MutableLiveData<>();
@@ -26,14 +27,15 @@ public class OnBoardingViewModel extends ViewModel {
     }
 
     public void login(String email, String password) {
+        String requestId = UUID.randomUUID().toString();
 
-        mLoginRepository.loginRemote(new LoginBody(email, password), new LoginResponseInterface() {
+        mLoginRepository.loginRemote(new LoginBody(requestId, email, password), new LoginResponseInterface() {
             @Override
             public void onResponse(LoginResponse loginResponse) {
 //                set the progress bar
                 HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put(Constant.AUTH_TOKEN, loginResponse.getToken());
-                hashMap.put(Constant.LOGGED_IN_USER_ID, loginResponse.getUser_id());
+                hashMap.put(Constant.AUTH_TOKEN, loginResponse.getData().getToken());
+                hashMap.put(Constant.LOGGED_IN_USER_ID, loginResponse.getData().getUserId());
                 mLoginResultMutableLiveData.postValue(hashMap);
                 Log.d("checkingcalls", "onResponse: jkhxcvbhncnvb" + loginResponse.getErrorMessage());
             }

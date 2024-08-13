@@ -3,6 +3,7 @@ package com.finlake.service;
 import com.finlake.models.FinanceRoomRequestData;
 import com.finlake.models.FinanceRoomResponse;
 import com.finlake.models.RoomUserResponse;
+import com.finlake.models.response.FinanceRoomListResponse;
 
 import java.util.List;
 
@@ -14,9 +15,13 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface FinanceRoomService {
-    @POST("newFinanceRoom")
-    Call<FinanceRoomResponse> createFinanceRoom(@Header("Authorization") String authToken, @Body FinanceRoomRequestData financeRoomRequestData);
+    @POST("room/new")
+    Call<FinanceRoomResponse> createFinanceRoom(@Header("authorization") String authToken, @Body FinanceRoomRequestData financeRoomRequestData);
 
-    @GET("filterUserFromFinanceRoom")
-    Call<List<FinanceRoomResponse>> getAllFinanceRoomByUserId(@Header("Authorization") String authToken, @Query(value = "page") int page, @Query(value = "pageSize") int pageSize, @Query(value = "pagination") boolean pagination, @Query(value = "status") String status, @Query("id") String id);
+    @GET("room/filter")
+    Call<FinanceRoomListResponse> getAllFinanceRoomByUserId(@Header("authorization") String authToken,
+                                                            @Header(value = "requestId") String requestId,
+                                                            @Query(value = "page") int page,
+                                                            @Query(value = "size") int pageSize, @Query(value = "status") String status,
+                                                            @Query("userId") String id);
 }

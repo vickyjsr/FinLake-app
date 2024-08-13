@@ -1,37 +1,33 @@
 package com.finlake.models;
 
-import androidx.annotation.NonNull;
-
-import java.sql.Timestamp;
-
 public class FinanceRoomResponse {
 
     private String id;
 
     private String name;
 
-    private UserResponse created_by;
+    private String createdBy;
 
-    private String room_type;
+    private String roomType;
 
     private String status;
 
-    private String created_at;
+    private String createdAt;
 
-    private String updated_at;
+    private String updatedAt;
 
     public FinanceRoomResponse() {
 
     }
 
-    public FinanceRoomResponse(String id, String name, UserResponse created_by, String room_type, String status, String created_at, String updated_at) {
+    public FinanceRoomResponse(String id, String name, String createdBy, String roomType, String status, String createdAt, String updatedAt) {
         this.id = id;
         this.name = name;
-        this.created_by = created_by;
-        this.room_type = room_type;
+        this.createdBy = createdBy;
+        this.roomType = roomType;
         this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public String getId() {
@@ -50,20 +46,20 @@ public class FinanceRoomResponse {
         this.name = name;
     }
 
-    public UserResponse getCreated_by() {
-        return created_by;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreated_by(UserResponse created_by) {
-        this.created_by = created_by;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
-    public String getRoom_type() {
-        return room_type;
+    public String getRoomType() {
+        return roomType;
     }
 
-    public void setRoom_type(String room_type) {
-        this.room_type = room_type;
+    public void setRoomType(String roomType) {
+        this.roomType = roomType;
     }
 
     public String getStatus() {
@@ -74,24 +70,24 @@ public class FinanceRoomResponse {
         this.status = status;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getUpdated_at() {
-        return updated_at;
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(String updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override
     public String toString() {
-        return "FinanceRoomResponse{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", created_by=" + created_by + ", room_type='" + room_type + '\'' + ", status='" + status + '\'' + ", created_at='" + created_at + '\'' + ", updated_at='" + updated_at + '\'' + '}';
+        return "FinanceRoomResponse{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", createdBy=" + createdBy + ", roomType='" + roomType + '\'' + ", status='" + status + '\'' + ", createdAt='" + createdAt + '\'' + ", updatedAt='" + updatedAt + '\'' + '}';
     }
 }

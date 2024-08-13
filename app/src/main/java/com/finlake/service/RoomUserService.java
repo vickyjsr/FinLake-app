@@ -14,8 +14,8 @@ import retrofit2.http.Query;
 
 public interface RoomUserService {
     @POST("newFinanceRoom")
-    Call<FinanceRoomResponse> createRoomUser(@Header("Authorization") String authToken, @Body FinanceRoomRequestData financeRoomRequestData);
+    Call<FinanceRoomResponse> createRoomUser(@Header("authorization") String authToken, @Body FinanceRoomRequestData financeRoomRequestData);
 
     @GET("filterUserFromFinanceRoom")
-    Call<List<FinanceRoomResponse>> getAllRoomUserByUserId(@Header("Authorization") String authToken, @Query("id") String id);
+    Call<List<FinanceRoomResponse>> getAllRoomUserByUserId(@Header("authorization") String authToken, @Query("id") String id);
 }

@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import com.finlake.interfaces.FinanceRoomInterface;
 import com.finlake.models.FinanceRoomRequestData;
 import com.finlake.models.FinanceRoomResponse;
+import com.finlake.models.Pageable;
+import com.finlake.models.response.FinanceRoomListResponse;
 import com.finlake.retorfit.RetrofitClientInstance;
 import com.finlake.service.FinanceRoomService;
 
@@ -48,16 +50,18 @@ public class FinanceRoomRepository {
         });
     }
 
-    public void getAllFinanceRoomByUserId(int page, int pageSize, boolean pagination, String status, String authToken, String id, FinanceRoomInterface financeRoomInterface) {
-        Call<List<FinanceRoomResponse>> financeRoomResponseCall = financeRoomService.getAllFinanceRoomByUserId(authToken, page, pageSize, pagination, status, id);
-        financeRoomResponseCall.enqueue(new Callback<List<FinanceRoomResponse>>() {
+    public void getAllFinanceRoomByUserId(String requestId, int page, int pageSize, String status, String authToken, String id, FinanceRoomInterface financeRoomInterface) {
+        Call<FinanceRoomListResponse> financeRoomResponseCall = financeRoomService.getAllFinanceRoomByUserId(authToken, requestId, page, pageSize, status, id);
+        financeRoomResponseCall.enqueue(new Callback<FinanceRoomListResponse>() {
             @Override
-            public void onResponse(@NonNull Call<List<FinanceRoomResponse>> call, @NonNull Response<List<FinanceRoomResponse>> response) {
+            public void onResponse(@NonNull Call<FinanceRoomListResponse> call, @NonNull Response<FinanceRoomListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    for(FinanceRoomResponse financeRoomResponse:response.body()){
+                    FinanceRoomListResponse financeRoomListResponse = response.body();
+                    List<FinanceRoomResponse> financeRoomResponses = financeRoomListResponse.getData().getContent();
+                    for (FinanceRoomResponse financeRoomResponse : financeRoomResponses) {
                         System.out.println(financeRoomResponse);
                     }
-                    financeRoomInterface.onResponseList(response.body());
+                    financeRoomInterface.onResponseList(financeRoomResponses);
                 } else if (response.code() == 401) { // Unauthenticated
                     financeRoomInterface.redirectToLogin();
                 } else {
@@ -66,7 +70,7 @@ public class FinanceRoomRepository {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<FinanceRoomResponse>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<FinanceRoomListResponse> call, @NonNull Throwable t) {
                 financeRoomInterface.onFailure(t);
             }
         });

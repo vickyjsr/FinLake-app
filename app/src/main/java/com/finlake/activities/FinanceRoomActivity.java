@@ -21,6 +21,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.finlake.Constants.Constant;
 import com.finlake.R;
 import com.finlake.MyPreferences;
 import com.finlake.adapters.FinanceChatHeadAdapter;
@@ -28,12 +29,13 @@ import com.finlake.adapters.FinanceRoomAdapter;
 import com.finlake.fragments.UserFragment;
 import com.finlake.interfaces.OnBackPressFrag;
 import com.finlake.interfaces.OnClickFinanceRoomListener;
-import com.finlake.interfaces.PaginationScrollListener;
 import com.finlake.models.FinanceRoomResponse;
+import com.finlake.models.Pageable;
 import com.finlake.viewmodels.RoomViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FinanceRoomActivity extends AppCompatActivity implements OnBackPressFrag, OnClickFinanceRoomListener {
 
@@ -164,7 +166,7 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
                 if (shouldPaginate && !recyclerView.canScrollVertically(1)) {
                     isScrolling = false;
                     currentPage += 1;
-                    loadNextPage(currentPage, 10, true, "active", authToken, userId);
+                    loadNextPage(currentPage, 10, "active", authToken, userId);
                 }
             }
         });
@@ -175,12 +177,13 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
         int pageSize = 10;
         boolean pagination = true;
         String status = "active";
-        roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
+        String requestId = UUID.randomUUID().toString();
+        roomViewModel.getAllFinanceRoomByUserId(requestId, page, pageSize, status, authToken, userId);
     }
 
-    private void loadNextPage(int currentPage, int pageSize, boolean pagination, String status, String authToken, String userId) {
+    private void loadNextPage(int currentPage, int pageSize, String status, String authToken, String userId) {
         Log.d("jfbnfvskedn", "loadNextPage: " + currentPage);
-        roomViewModel.getAllFinanceRoomByUserId(currentPage, pageSize, pagination, status, authToken, userId);
+        roomViewModel.getAllFinanceRoomByUserId(Constant.generateRequestId(), currentPage, pageSize, status, authToken, userId);
     }
 
     private void redirectToLoginPage() {
@@ -234,7 +237,8 @@ public class FinanceRoomActivity extends AppCompatActivity implements OnBackPres
         boolean pagination = true;
         String status = "active";
         currentPage = 0;
-        roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
+        String requestId = Constant.generateRequestId();
+        roomViewModel.getAllFinanceRoomByUserId(requestId, page, pageSize, status, authToken, userId);
     }
 
     private void makeToast(String token) {

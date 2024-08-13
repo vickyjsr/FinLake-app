@@ -51,4 +51,7 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
     implementation 'at.wirecube:additive_animations:1.9.3'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    implementation "org.projectlombok:lombok:1.18.34"
+
 }

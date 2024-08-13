@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.finlake.interfaces.FinanceRoomInterface;
 import com.finlake.models.FinanceRoomRequestData;
 import com.finlake.models.FinanceRoomResponse;
+import com.finlake.models.Pageable;
 import com.finlake.repository.FinanceRoomRepository;
 
 import java.util.List;
@@ -47,8 +48,8 @@ public class RoomViewModel extends ViewModel {
         });
     }
 
-    public void getAllFinanceRoomByUserId(int page, int pageSize, boolean pagination, String status, String authToken, String userId) {
-        financeRoomRepository.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId, new FinanceRoomInterface() {
+    public void getAllFinanceRoomByUserId(String requestId,int page, int pageSize, String status, String authToken, String userId) {
+        financeRoomRepository.getAllFinanceRoomByUserId(requestId, page, pageSize, status, authToken, userId, new FinanceRoomInterface() {
             @Override
             public void onResponse(FinanceRoomResponse financeRoomResponse) {
 

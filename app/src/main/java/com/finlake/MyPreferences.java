@@ -32,7 +32,7 @@ public class MyPreferences {
     }
 
     public void setAuthToken(String authToken) {
-        editor.putString(Constant.AUTH_TOKEN, authToken);
+        editor.putString(Constant.AUTH_TOKEN, "Bearer " + authToken);
         editor.commit();
     }
 

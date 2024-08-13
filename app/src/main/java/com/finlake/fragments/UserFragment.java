@@ -3,9 +3,7 @@ package com.finlake.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.finlake.Constants.Constant;
 import com.finlake.R;
 import com.finlake.MyPreferences;
 import com.finlake.activities.OnBoardingActivity;
@@ -26,10 +25,9 @@ import com.finlake.adapters.UserAdapter;
 import com.finlake.enums.GlobalEnum;
 import com.finlake.interfaces.OnBackPressFrag;
 import com.finlake.interfaces.OnClickSelectionListener;
-import com.finlake.interfaces.PaginationScrollListener;
 import com.finlake.models.FinanceRoomBody;
 import com.finlake.models.FinanceRoomRequestData;
-import com.finlake.models.FinanceRoomResponse;
+import com.finlake.models.Pageable;
 import com.finlake.models.UserResponse;
 import com.finlake.viewmodels.RoomViewModel;
 import com.finlake.viewmodels.UserViewModel;
@@ -108,7 +106,7 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
             showEditImage = !showEditImage;
         });
 
-        userViewModel.getAllUsers(authToken, userId);
+        userViewModel.getAllUsers(authToken, userId, 0, 20);
 
         userViewModel.getAllUsersList().observe(getViewLifecycleOwner(), listUsers -> {
             userAdapter.setItems(listUsers);
@@ -150,8 +148,8 @@ public class UserFragment extends Fragment implements OnClickSelectionListener {
 
     }
 
-    private void loadNextPage(int page, int pageSize, boolean pagination, String status, String authToken, String userId) {
-        roomViewModel.getAllFinanceRoomByUserId(page, pageSize, pagination, status, authToken, userId);
+    private void loadNextPage(int page, int pageSize, String status, String authToken, String userId) {
+        roomViewModel.getAllFinanceRoomByUserId(Constant.generateRequestId(), page, pageSize, status, authToken, userId);
     }
 
     private void setUpViews(View view) {

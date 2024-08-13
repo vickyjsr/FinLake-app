@@ -6,9 +6,13 @@ import androidx.annotation.NonNull;
 
 import com.finlake.interfaces.UserResponseInterface;
 import com.finlake.models.UserResponse;
+import com.finlake.models.response.UserListResponse;
 import com.finlake.retorfit.RetrofitClientInstance;
 import com.finlake.service.UserService;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -21,14 +25,17 @@ public class UserRepository {
 
     }
 
-    public void getUsers(String authToken, String id, UserResponseInterface userResponseInterface) {
+    public void getUsers(String authToken, String requestId, String id, int page, int pageSize, UserResponseInterface userResponseInterface) {
         UserService userService = RetrofitClientInstance.getInstance().create(UserService.class);
-        Call<List<UserResponse>> initiateLogin = userService.getAllUsersFiltered("Bearer " + authToken, id);
-        initiateLogin.enqueue(new Callback<List<UserResponse>>() {
+        List<String> userIds = new ArrayList(Collections.singleton(id));
+        Call<UserListResponse> initiateLogin = userService.getAllUsersFiltered(authToken, requestId, userIds, page, pageSize);
+        initiateLogin.enqueue(new Callback<UserListResponse>() {
             @Override
-            public void onResponse(@NonNull Call<List<UserResponse>> call, @NonNull Response<List<UserResponse>> response) {
+            public void onResponse(@NonNull Call<UserListResponse> call, @NonNull Response<UserListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    userResponseInterface.onResponse(response.body());
+                    UserListResponse userListResponse = response.body();
+                    List<UserResponse> userResponses = userListResponse.getData().getContent();
+                    userResponseInterface.onResponse(userResponses);
                 } else if (response.code() == 401) {
                     userResponseInterface.redirectToLogin();
                 } else {
@@ -37,7 +44,7 @@ public class UserRepository {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<UserResponse>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<UserListResponse> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });
