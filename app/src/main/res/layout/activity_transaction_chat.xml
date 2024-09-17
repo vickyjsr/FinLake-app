@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".activities.TransactionChat">
+
+    <TextView
+        android:id="@+id/tv_chat_header"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_56sdp"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:background="@color/background_color"
+        android:gravity="center_vertical"
+        android:padding="@dimen/_9sdp"
+        android:text="Group name"
+        android:textColor="@color/card_color"
+        android:textSize="@dimen/_24sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_split_chats"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/et_create_split_request"
+        app:layout_constraintTop_toBottomOf="@id/tv_chat_header" />
+
+    <EditText
+        android:id="@+id/et_create_split_request"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_7sdp"
+        android:layout_marginBottom="@dimen/_11sdp"
+        android:gravity="center_vertical"
+        android:hint="split"
+        android:inputType="number"
+        android:padding="@dimen/_11sdp"
+        android:textColor="@color/card_color"
+        android:textColorHint="@color/card_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_send"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:background="@drawable/send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/et_create_split_request" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

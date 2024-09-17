@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_3sdp"
+    android:background="@drawable/card_corner"
+    android:padding="@dimen/_11sdp">
+
+    <ImageView
+        android:id="@+id/iv_profile_pic"
+        android:layout_width="@dimen/_34sdp"
+        android:layout_height="@dimen/_34sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:layout_marginBottom="@dimen/_6sdp"
+        android:src="@drawable/round_icon_placeholder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_room_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_19sdp"
+        android:layout_marginTop="10dp"
+        android:text="Goa Plan"
+        android:textColor="@color/text_heading"
+        android:textSize="@dimen/_13sdp"
+        app:layout_constraintStart_toEndOf="@id/iv_profile_pic"
+        app:layout_constraintTop_toTopOf="@id/iv_profile_pic" />
+
+    <ImageView
+        android:id="@+id/iv_room_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_11sdp"
+        android:background="@drawable/group_room"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_room_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_room_name" />
+
+    <TextView
+        android:id="@+id/tv_last_updated_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_11sdp"
+        android:text="12/09/23"
+        android:textColor="@color/text_heading"
+        android:textSize="@dimen/_9sdp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_profile_pic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_room_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
